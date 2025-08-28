@@ -1,0 +1,4 @@
+Flask
+bcrypt
+pyjwt
+werkzeug
