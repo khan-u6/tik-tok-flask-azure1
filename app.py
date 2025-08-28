@@ -1,4 +1,4 @@
-from flask import Flask, request, jsonify
+from flask import Flask, request, jsonify, send_from_directory
 from werkzeug.utils import secure_filename
 import os
 import sqlite3
@@ -14,12 +14,10 @@ DATABASE = 'video_sharing_platform.db'
 # Secret key for JWT encoding and decoding
 app.config['SECRET_KEY'] = 'your_secret_key'
 
-
 # Function to get a database connection
 def get_db():
     conn = sqlite3.connect(DATABASE)
     return conn
-
 
 # Create the tables if they don't exist
 def init_db():
@@ -43,10 +41,13 @@ def init_db():
     conn.commit()
     conn.close()
 
-
 # Initialize the database
 init_db()
 
+# Home route to serve index.html
+@app.route('/')
+def home():
+    return send_from_directory('static', 'index.html')
 
 # User registration endpoint
 @app.route('/register', methods=['POST'])
@@ -74,7 +75,6 @@ def register():
 
     return jsonify({"message": "User registered successfully"}), 201
 
-
 # User login endpoint
 @app.route('/login', methods=['POST'])
 def login():
@@ -101,7 +101,6 @@ def login():
 
     return jsonify({"token": token}), 200
 
-
 # Video upload endpoint
 @app.route('/upload', methods=['POST'])
 def upload_video():
@@ -123,7 +122,6 @@ def upload_video():
     conn.close()
 
     return jsonify({"message": "Video uploaded successfully"}), 201
-
 
 # Get all videos
 @app.route('/videos', methods=['GET'])
@@ -147,7 +145,6 @@ def get_videos():
         })
 
     return jsonify(video_list), 200
-
 
 if __name__ == '__main__':
     if not os.path.exists('uploads'):
