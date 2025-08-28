@@ -1,0 +1,423 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Video Sharing - TikTok Clone</title>
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: linear-gradient(135deg, #ff9a8b, #ff6a5d, #d67f60); /* Vibrant gradient */
+            color: white;
+            overflow-x: hidden;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin-top: 50px;
+            display: flex;
+            justify-content: center;
+        }
+
+        .videoCard {
+            margin-bottom: 30px;
+            border: 1px solid #ddd;
+            padding: 15px;
+            border-radius: 10px;
+            background-color: #fff;
+            color: #000;
+            width: 100%;
+        }
+
+        .video {
+            width: 100%;
+            border-radius: 8px;
+        }
+
+        .videoActions button {
+            margin-right: 10px;
+        }
+
+        .commentsSection {
+            margin-top: 15px;
+        }
+
+        .commentInput {
+            margin-bottom: 10px;
+            width: 80%;
+            display: inline-block;
+        }
+
+        .commentSubmit {
+            display: inline-block;
+        }
+
+        footer {
+            position: fixed;
+            bottom: 0;
+            width: 100%;
+            background-color: #343a40;
+            color: white;
+            text-align: center;
+            padding: 10px;
+        }
+
+        .form-container {
+            display: none;
+        }
+
+        #mainContent {
+            display: none;
+        }
+
+        .videoThumbnail {
+            border-radius: 8px;
+            margin-bottom: 15px;
+        }
+
+        .videoStats {
+            display: flex;
+            justify-content: space-between;
+            font-size: 14px;
+            color: #6c757d;
+        }
+
+        .videoCard:hover {
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .form-container {
+            display: none;
+            margin-top: 100px;
+        }
+
+        .section-title {
+            font-size: 28px;
+            font-weight: bold;
+            color: #ffffff;
+            margin-bottom: 30px;
+        }
+
+        .btn-custom {
+            background-color: #28a745;
+            color: white;
+        }
+
+        .btn-custom:hover {
+            background-color: #218838;
+        }
+
+        .nav-link {
+            color: #ffffff;
+        }
+
+        .nav-link:hover {
+            color: #0056b3;
+        }
+
+        .navbar {
+            background-color: #343a40;
+        }
+
+        .navbar-brand {
+            color: white;
+        }
+
+        .navbar-toggler-icon {
+            background-color: white;
+        }
+
+        .userProfile {
+            margin-top: 30px;
+            padding: 20px;
+            background-color: #2c3e50;  /* Darker color for better contrast */
+            border-radius: 10px;
+            box-shadow: 0px 0px 15px rgba(0, 0, 0, 0.2);
+        }
+
+        .profileInfo {
+            margin-bottom: 15px;
+            font-size: 18px;
+            color: #ecf0f1;  /* Lighter color for text */
+        }
+
+        .videoUploadSection {
+            background-color: #fff;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .dashboardSection {
+            background-color: #fff;
+            padding: 30px;
+            border-radius: 10px;
+            margin-top: 30px;
+        }
+
+        .statCard {
+            background-color: #007bff;
+            padding: 20px;
+            color: white;
+            border-radius: 8px;
+            text-align: center;
+        }
+
+        .statCard h4 {
+            margin-bottom: 10px;
+        }
+
+        .statCard p {
+            font-size: 18px;
+        }
+
+        .videoFeed {
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .videoCard {
+            flex: 1;
+            margin: 10px;
+            max-width: 900px; /* Increased video size */
+        }
+
+        .uploadForm {
+            margin-top: 20px;
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .statsCanvas {
+            max-width: 600px;
+            margin: auto;
+            padding: 30px;
+            background-color: #f1f1f1;
+            border-radius: 10px;
+        }
+
+    </style>
+</head>
+<body>
+    <!-- Navbar -->
+    <nav class="navbar navbar-expand-lg navbar-dark">
+        <a class="navbar-brand" href="#">TikTok Clone</a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav ml-auto">
+                <li class="nav-item">
+                    <a class="nav-link" href="#" id="goToHome">Home</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#" id="goToUpload">Upload Video</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#" id="goToSignIn">Sign In</a>
+                </li>
+            </ul>
+        </div>
+    </nav>
+
+    <!-- SignUp Form -->
+    <div id="signupForm" class="container form-container">
+        <h2>Sign Up</h2>
+        <form id="signup">
+            <input type="text" id="signupUsername" class="form-control mb-2" placeholder="Username" required>
+            <input type="password" id="signupPassword" class="form-control mb-2" placeholder="Password" required>
+            <button type="submit" class="btn btn-custom">Sign Up</button>
+        </form>
+        <br>
+        <a href="#" id="goToSignIn">Already have an account? Sign In</a>
+    </div>
+
+    <!-- SignIn Form -->
+    <div id="signinForm" class="container form-container">
+        <h2>Sign In</h2>
+        <form id="signin">
+            <input type="text" id="signinUsername" class="form-control mb-2" placeholder="Username" required>
+            <input type="password" id="signinPassword" class="form-control mb-2" placeholder="Password" required>
+            <button type="submit" class="btn btn-custom">Sign In</button>
+        </form>
+        <br>
+        <a href="#" id="goToSignup">Don't have an account? Sign Up</a>
+    </div>
+
+    <!-- Main Content (Video Feed) -->
+    <div id="mainContent" class="container">
+        <div class="section-title">Trending Videos</div>
+        <div class="videoFeed" id="videoFeed">
+            <!-- Example of embedded AI-based videos from YouTube -->
+            <div class="videoCard">
+                <div class="videoThumbnail">
+                    <iframe width="100%" height="500" src="https://www.youtube.com/embed/tgbNymZ7vqY" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+                </div>
+                <div class="videoActions">
+                    <button class="btn btn-light likeBtn">Like <span class="likeCount">0</span></button>
+                    <button class="btn btn-light commentBtn">Comment</button>
+                    <button class="btn btn-light shareBtn">Share</button>
+                </div>
+                <div class="videoStats">
+                    <span>Views: <span class="viewCount">1000</span></span>
+                    <span>Shares: <span class="shareCount">5</span></span>
+                    <span>Comments: <span class="commentCount">10</span></span>
+                </div>
+                <div class="commentsSection">
+                    <input type="text" class="form-control commentInput" placeholder="Add a comment...">
+                    <button class="btn btn-primary commentSubmit">Submit</button>
+                </div>
+            </div>
+
+            <!-- Add More Video Cards Here -->
+        </div>
+
+        <div class="section-title">Upload Video</div>
+        <div class="videoUploadSection">
+            <input type="file" class="form-control mb-2" id="videoFile" accept="video/*" required>
+            <input type="text" class="form-control mb-2" id="videoTitle" placeholder="Video Title" required>
+            <textarea class="form-control mb-2" id="videoDescription" placeholder="Video Description" required></textarea>
+            <button type="submit" class="btn btn-custom" id="uploadBtn">Upload Video</button>
+        </div>
+
+        <div class="section-title">Creator's Profile</div>
+        <div class="userProfile">
+            <div class="profileInfo">Username: <span id="profileUsername">Umair</span></div>
+            <div class="profileInfo">Total Videos: <span id="totalVideos">5</span></div>
+            <div class="profileInfo">Followers: <span id="followersCount">1000</span></div>
+        </div>
+
+        <!-- Dashboard Section -->
+        <div class="section-title">Creator Dashboard</div>
+        <div class="dashboardSection">
+            <div class="statCard">
+                <h4>Total Videos Uploaded</h4>
+                <p id="totalUploadedVideos">10</p>
+            </div>
+            <div class="statCard">
+                <h4>Total Views</h4>
+                <p id="totalViews">5000</p>
+            </div>
+            <div class="statCard">
+                <h4>Total Comments</h4>
+                <p id="totalComments">200</p>
+            </div>
+        </div>
+
+        <!-- Stats Graph Section -->
+        <div class="section-title">Engagement Stats</div>
+        <div class="statsCanvas">
+            <canvas id="statsChart"></canvas>
+        </div>
+
+        <footer>
+            <p>&copy; 2025 TikTok Clone. All rights reserved.</p>
+        </footer>
+    </div>
+
+    <!-- Scripts -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.bundle.min.js"></script>
+    <script>
+        $(document).ready(function() {
+            // Show Sign Up Form on load
+            $('#signupForm').show();
+
+            // Show Sign In form
+            $('#goToSignIn').click(function() {
+                $('#signupForm').hide();
+                $('#signinForm').show();
+            });
+
+            // Show Sign Up form
+            $('#goToSignup').click(function() {
+                $('#signinForm').hide();
+                $('#signupForm').show();
+            });
+
+            // Handle Signup
+            $('#signup').submit(function(e) {
+                e.preventDefault();
+                var username = $('#signupUsername').val();
+                var password = $('#signupPassword').val();
+                localStorage.setItem('username', username);
+                localStorage.setItem('password', password);
+                alert('Signup successful! Please Sign In to continue.');
+                $('#signupForm').hide();
+                $('#signinForm').show();
+            });
+
+            // Handle Sign In
+            $('#signin').submit(function(e) {
+                e.preventDefault();
+                var username = $('#signinUsername').val();
+                var password = $('#signinPassword').val();
+                if (username === localStorage.getItem('username') && password === localStorage.getItem('password')) {
+                    $('#signinForm').hide();
+                    $('#mainContent').show();
+                    alert('You are logged in successfully!');
+                } else {
+                    alert('Invalid credentials. Please try again.');
+                }
+            });
+
+            // Like button functionality
+            $('.likeBtn').click(function() {
+                var likeCountElement = $(this).find('.likeCount');
+                var likeCount = parseInt(likeCountElement.text());
+                likeCountElement.text(likeCount + 1);
+            });
+
+            // Comment button functionality
+            $('.commentBtn').click(function() {
+                $(this).closest('.videoCard').find('.commentsSection').toggle();
+            });
+
+            // Submit comment functionality
+            $('.commentSubmit').click(function() {
+                var commentText = $(this).closest('.commentsSection').find('.commentInput').val();
+                if (commentText) {
+                    alert("Your comment: " + commentText);
+                    $(this).closest('.commentsSection').find('.commentInput').val('');
+                } else {
+                    alert("Please enter a comment.");
+                }
+            });
+
+            // Upload video functionality
+            $('#uploadBtn').click(function() {
+                alert('Video uploaded successfully!');
+                // Add logic for saving video details here
+            });
+
+            // Display Stats Graph using Chart.js
+            var ctx = document.getElementById('statsChart').getContext('2d');
+            var statsChart = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: ['Likes', 'Shares', 'Comments', 'Views'],
+                    datasets: [{
+                        label: 'Video Engagement Stats',
+                        data: [200, 50, 100, 5000], // mock data
+                        backgroundColor: ['#ff7f50', '#ff6347', '#ff5733', '#ff4500'],
+                        borderColor: ['#ff7f50', '#ff6347', '#ff5733', '#ff4500'],
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    scales: {
+                        y: {
+                            beginAtZero: true
+                        }
+                    }
+                }
+            });
+        });
+    </script>
+</body>
+</html>
